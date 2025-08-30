@@ -6,11 +6,18 @@ import torch, jsonlines
 MODEL_NAME = os.getenv("GEN_MODEL", "Qwen/Qwen2.5-0.5B-Instruct")
 _tok, _mdl = None, None
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+_lock = threading.Lock()
+
 def _load():
     global _tok, _mdl
-    if _tok is None:
-        _tok = AutoTokenizer.from_pretrained(MODEL_NAME)
-        _mdl = AutoModelForCausalLM.from_pretrained(MODEL_NAME, torch_dtype=torch.float32).to(device)
+    with _lock:
+        if _tok is None:
+            try:
+                _tok = AutoTokenizer.from_pretrained(MODEL_NAME)
+                torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+                _mdl = AutoModelForCausalLM.from_pretrained(MODEL_NAME, torch_dtype=torch_dtype).to(device)
+            except Exception as e:
+                raise RuntimeError(f"Failed to load model or tokenizer: {str(e)}")
     return _tok, _mdl
 
 PROMPT = """You are a senior Python reviewer. Given the code, write a brief review with 1–3 specific, actionable suggestions. Be concise.

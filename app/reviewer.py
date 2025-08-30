@@ -9,7 +9,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def _load():
     global _tok, _mdl
     if _tok is None:
-        _tok = AutoTokenizer.from_pretrained(MODEL_NAME).to(device)
+        _tok = AutoTokenizer.from_pretrained(MODEL_NAME)
         _mdl = AutoModelForCausalLM.from_pretrained(MODEL_NAME, torch_dtype=torch.float32).to(device)
     return _tok, _mdl
 

@@ -1,0 +1,6 @@
+{"code": "def add(a,b):return a+b", "review": "Add a docstring and spaces around operators.", "label": 1, "lint_delta": 1}
+{"code": "def add(a,b):return a+b", "review": "LGTM", "label": 0, "lint_delta": 0}
+{"code": "def add(a,b):return a+b", "review": "Add a docstring and spaces around operators.", "label": 1, "lint_delta": 1, "tests_passed": 0}
+{"code": "def add(a,b):return a+b", "review": "LGTM", "label": 0, "lint_delta": 0, "tests_passed": 0}
+{"code": "def foo(x):\n\treturn x*2", "review": "Replace tab with spaces and add type hints for x and return.", "label": 1, "lint_delta": 1, "tests_passed": 0}
+{"code": "def foo(x):\n\treturn x*2", "review": "Works.", "label": 0, "lint_delta": 0, "tests_passed": 0}

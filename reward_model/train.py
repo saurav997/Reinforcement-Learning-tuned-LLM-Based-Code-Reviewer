@@ -7,7 +7,7 @@ import torch.optim as optim
 from pathlib import Path
 from typing import List, Dict, Tuple
 from sentence_transformers import SentenceTransformer
-
+import time
 from model import RM
 
 SEED = 42
@@ -148,9 +148,22 @@ def main():
         "keywords": KEYWORDS,
         "margin": args.margin,
     }
+     # ... after saving rm.pt and rm_config.json
+    rm_report = {
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "commit": os.getenv("GITHUB_SHA", "local"),
+        "rm_tag": os.getenv("RM_TAG", "rm@unknown"),
+        "auc": float('nan'),   # optional: fill if you compute AUC
+        "acc": float('nan'),   # optional: fill if you compute accuracy
+        "loss_bce": round(total_bce, 4),
+        "loss_rank": round(total_mrk, 4),
+    }
     with open(Path(args.out_dir) / "rm_config.json", "w") as f:
         json.dump(cfg, f, indent=2)
     print(f"Saved: {out_pt} and rm_config.json")
+
+   
+
 
 if __name__ == "__main__":
     main()

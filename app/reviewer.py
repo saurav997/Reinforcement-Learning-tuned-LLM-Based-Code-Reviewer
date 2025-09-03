@@ -6,6 +6,7 @@ import torch, jsonlines
 MODEL_NAME = os.getenv("GEN_MODEL", "Qwen/Qwen2.5-0.5B-Instruct")
 _tok, _mdl = None, None
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 def _load():
     global _tok, _mdl
     if _tok is None:

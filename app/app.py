@@ -25,6 +25,14 @@ def review_stream(code: str):
     # 3) Replace streamed draft with the true best + show alternatives and scores
     yield best["text"], [[a] for a in alts], str(best["scores"])
 
+
+
+def submit_rating(code, top_review, stars):
+    from reviewer import log_event
+    log_event({"type":"rating","code":code,"top_review":top_review,"stars":int(stars)})
+    return "Thanks!"
+
+
 with gr.Blocks() as demo:
     gr.Markdown("# RL Code Review Reranker (Streaming)")
     code = gr.Code(lines=16, label="Paste Python code")
@@ -33,6 +41,9 @@ with gr.Blocks() as demo:
     alts = gr.Dataframe(headers=["Alternatives"], row_count=(3, "fixed"))
     dbg = gr.Textbox(label="Score Breakdown (debug)", interactive=False)
     btn.click(review_stream, inputs=[code], outputs=[best, alts, dbg])
-
+    rating = gr.Radio(choices=[1,2,3,4,5], label="Rate the top review (1–5)", value=3)
+    submit = gr.Button("Submit Rating")
+    submit.click(submit_rating, inputs=[code, best, rating], outputs=[dbg])
+    
 # Enable Gradio’s event queue for streaming
 demo.queue(max_size=32).launch()
